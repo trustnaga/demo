@@ -11,6 +11,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -47,16 +48,21 @@ public class ADTokenFilter implements Filter {
             accessToken = accessToken.substring(BEARER_PREFIX.length());
             System.out.print(accessToken);
             try {
-                if(validateAccessToken(accessToken) != null) {
+                Jws<Claims> claims = validateAccessToken(accessToken);
+                if (claims != null) {
+                    // If the access token is valid, store the claims in the session
+                    HttpSession session = httpRequest.getSession();
+                    session.setAttribute("claims", claims);
+
+                    // Continue with the request
                     chain.doFilter(request, response);
                 }
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 response.setContentType("application/json");
                 response.getWriter().write("{\"error\": \"Invalid access token\"}");
             }
-        }else {
+        } else {
             // If the access token is not present or has the wrong prefix, reject the request with an appropriate error message
             response.setContentType("application/json");
             response.getWriter().write("{\"error\": \"Missing or malformed access token\"}");
