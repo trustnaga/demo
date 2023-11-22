@@ -1,0 +1,18 @@
+
+spring:
+ cloud:
+   azure:
+     active-directory:
+       session-stateless: true
+       enabled: true
+       profile:
+         tenant-id: 16b3c013-d300-468d-ac64-7eda0820b6d3
+       credential:
+          client-id: a5948bd0-10cd-42c7-b066-264ff114ddb9
+       app-id-uri: api://a5948bd0-10cd-42c7-b066-264ff114ddb9
+
+
+logging:
+  level:
+    org.springframework.security: TRACE 
+    org.springframework.web: TRACE
