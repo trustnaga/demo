@@ -5,7 +5,6 @@ import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.SigningKeyResolverAdapter;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.io.ByteArrayInputStream;
 
 
@@ -24,10 +23,12 @@ import java.security.interfaces.RSAPublicKey;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Base64;
+import java.net.URL;
 
 import javax.xml.bind.DatatypeConverter;
 
 import java.security.KeyFactory;
+import org.apache.commons.io.IOUtils;
 
 
 public class SigningKeyResolver extends SigningKeyResolverAdapter{
@@ -84,7 +85,7 @@ public class SigningKeyResolver extends SigningKeyResolverAdapter{
     private AADKeySet getKeysFromJwkUri() throws IOException {
         AADKeySet keySet = new AADKeySet();
         URL url = new URL(jwksUrl);
-        String content = new String(url.openStream().readAllBytes());
+        String content = new String(IOUtils.toByteArray(url.openStream()));
         JSONObject contentObject = new JSONObject(content);
         JSONArray keys = contentObject.getJSONArray("keys");
         System.out.print("keys: " + keys.toString() + "\n");
