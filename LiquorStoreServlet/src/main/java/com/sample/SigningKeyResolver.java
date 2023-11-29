@@ -22,13 +22,15 @@ import java.security.spec.RSAPublicKeySpec;
 import java.security.interfaces.RSAPublicKey;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.Base64;
+
+
 import java.net.URL;
 
 import javax.xml.bind.DatatypeConverter;
 
 import java.security.KeyFactory;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.codec.binary.Base64;
 
 
 public class SigningKeyResolver extends SigningKeyResolverAdapter{
@@ -67,8 +69,9 @@ public class SigningKeyResolver extends SigningKeyResolverAdapter{
             System.err.println("*******key: " + key.toString() + "\n");
             System.err.println("*******key N: " + key.getN() + "\n");
             System.err.println("*******key E: " + key.getE() + "\n");
-            BigInteger modulus = new BigInteger(1, Base64.getUrlDecoder().decode(key.getN()));
-            BigInteger exponent = new BigInteger(1, Base64.getUrlDecoder().decode(key.getE()));
+            Base64 decoder = new Base64(true);
+            BigInteger modulus = new BigInteger(1, decoder.decode(key.getN()));
+            BigInteger exponent = new BigInteger(1, decoder.decode(key.getE()));
 
            publicKey = KeyFactory.getInstance("RSA").generatePublic(new RSAPublicKeySpec(modulus, exponent));
            System.err.println("*******publicKey 1: " + publicKey.toString() + "\n"); 
